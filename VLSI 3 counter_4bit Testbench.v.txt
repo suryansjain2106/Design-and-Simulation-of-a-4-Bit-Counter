@@ -1,0 +1,41 @@
+VLSI 3 counter_4bit Testbench
+	module counter_4bit_tb;
+
+    reg clk;
+    reg reset;
+    wire [3:0] count;
+
+    // Instantiate the counter
+    counter_4bit uut (
+        .clk(clk),
+        .reset(reset),
+        .count(count)
+    );
+
+    // Clock generation: 10ns period (100 MHz)
+    always #5 clk = ~clk;
+
+    initial begin
+        // Initialize
+        clk = 0;
+        reset = 1;
+
+        // Hold reset for 2 clock cycles
+        #12 reset = 0;
+
+        // Let it count for a while
+        #200 $finish;
+    end
+
+    // Monitor output
+    initial begin
+        $monitor("Time=%0t | reset=%b | count=%b (%0d)", $time, reset, count);
+    end
+
+    // Optional: dump waveform for GTKWave/Vivado
+    initial begin
+        $dumpfile("counter_4bit.vcd");
+        $dumpvars(0, counter_4bit_tb);
+    end
+
+endmodule
